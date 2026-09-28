@@ -138,6 +138,21 @@ The database (`database.db`) and all tables are created automatically the first 
 
 That's it — the SQLite database and sample data are created automatically on first run.
 
+## Deploying to Vercel
+
+Vercel detects the Flask `app` exported from `app.py`. The files in `public/static/`
+are served as static assets, and `vercel.json` configures the Python function.
+
+For persistent application data, configure these environment variables in the
+Vercel project settings:
+
+- `DATABASE_URL`: a PostgreSQL connection URL from a managed database provider.
+- `SECRET_KEY`: a long, random value used to sign Flask sessions.
+
+The PostgreSQL driver is included in `requirements.txt`. If `DATABASE_URL` is not
+set, Vercel uses SQLite in its temporary directory so the function can start, but
+that database is not persistent and must not be used for production data.
+
 ---
 
 ## 🧭 Routes Reference

@@ -19,6 +19,7 @@ Then open:
 
 import math
 import os
+import tempfile
 from datetime import datetime
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
@@ -38,11 +39,22 @@ from models import (
 # APP CONFIGURATION
 # ---------------------------------------------------------------------------
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+IS_VERCEL = bool(os.environ.get("VERCEL"))
 
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "database.db")
+app = Flask(__name__, static_folder=None if IS_VERCEL else "static")
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    if database_url.startswith("postgres://"):
+        database_url = "postgresql+psycopg://" + database_url[len("postgres://"):]
+    elif database_url.startswith("postgresql://"):
+        database_url = "postgresql+psycopg://" + database_url[len("postgresql://"):]
+else:
+    database_dir = tempfile.gettempdir() if IS_VERCEL else BASE_DIR
+    database_url = "sqlite:///" + os.path.join(database_dir, "database.db")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = "codealpha-restaurant-secret-key"  # needed for flash messages
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "codealpha-restaurant-secret-key")
 
 db.init_app(app)
 
