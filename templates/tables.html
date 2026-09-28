@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Tables | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Table Management</h1>
+        <p class="subtitle">{{ tables|length }} table(s) total</p>
+    </div>
+    <a href="{{ url_for('add_table') }}" class="btn btn-primary">+ Add Table</a>
+</div>
+
+{% if tables %}
+<div class="grid grid-4">
+    {% for table in tables %}
+    <div class="card table-card">
+        <div class="table-number">#{{ table.table_number }}</div>
+        <div class="table-capacity">Seats {{ table.capacity }} guests</div>
+
+        {% if table.status == 'Available' %}
+            <span class="badge badge-available">Available</span>
+        {% elif table.status == 'Reserved' %}
+            <span class="badge badge-reserved">Reserved</span>
+        {% else %}
+            <span class="badge badge-occupied">Occupied</span>
+        {% endif %}
+
+        <form class="status-form" method="POST" action="{{ url_for('update_table_status', id=table.id) }}">
+            <select name="status">
+                <option value="Available" {{ 'selected' if table.status == 'Available' }}>Available</option>
+                <option value="Reserved" {{ 'selected' if table.status == 'Reserved' }}>Reserved</option>
+                <option value="Occupied" {{ 'selected' if table.status == 'Occupied' }}>Occupied</option>
+            </select>
+            <button type="submit" class="btn btn-secondary btn-small">Update</button>
+        </form>
+        <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+            <a href="{{ url_for('edit_table', id=table.id) }}" class="btn btn-secondary btn-small">Edit</a>
+            <form method="POST" action="{{ url_for('delete_table', id=table.id) }}"
+                  onsubmit="return confirm('Delete this table?');">
+                <button type="submit" class="btn btn-danger btn-small">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <span class="empty-icon">🪑</span>
+    <p>No tables added yet.</p>
+</div>
+{% endif %}
+
+{% endblock %}

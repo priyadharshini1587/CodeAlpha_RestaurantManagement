@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if table else 'Add' }} Table | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>{{ 'Edit Table' if table else 'Add Table' }}</h1>
+        <p class="subtitle">{{ 'Update the table number or capacity' if table else 'Register a new physical table' }}</p>
+    </div>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <div class="form-group">
+            <label for="table_number">Table Number</label>
+                 <input type="number" min="1" id="table_number" name="table_number" placeholder="e.g. 5"
+                     value="{{ table.table_number if table else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="capacity">Capacity (number of guests)</label>
+            <input type="number" min="1" id="capacity" name="capacity" placeholder="e.g. 4"
+                   value="{{ table.capacity if table else '' }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">{{ 'Save Changes' if table else 'Add Table' }}</button>
+        <a href="{{ url_for('tables') }}" class="btn btn-secondary btn-block" style="margin-top: 10px;">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}

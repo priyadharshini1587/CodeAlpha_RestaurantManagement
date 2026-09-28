@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Menu | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Menu Management</h1>
+        <p class="subtitle">{{ items|length }} item(s) on the menu</p>
+    </div>
+    <a href="{{ url_for('add_menu') }}" class="btn btn-primary">+ Add Menu Item</a>
+</div>
+
+{% if items %}
+<div class="grid grid-3">
+    {% for item in items %}
+    <div class="card menu-card">
+        <span class="menu-category">{{ item.category }}</span>
+        <h3>{{ item.name }}</h3>
+        <div class="menu-price">₹{{ "%.2f"|format(item.price) }}</div>
+        {% if item.quantity > 0 %}
+            <div class="menu-qty">In stock: {{ item.quantity }}</div>
+        {% else %}
+            <div class="menu-qty out-of-stock">Out of stock</div>
+        {% endif %}
+        <div class="menu-actions">
+            <a href="{{ url_for('edit_menu', id=item.id) }}" class="btn btn-secondary btn-small">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_menu', id=item.id) }}"
+                                    onsubmit="return confirm('Delete this menu item?');">
+                                <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                        </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <span class="empty-icon">🍽️</span>
+    <p>No menu items yet. Add your first dish!</p>
+</div>
+{% endif %}
+
+{% endblock %}

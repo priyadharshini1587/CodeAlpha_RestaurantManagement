@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Reservation' if reservation else 'Reserve a Table' }} | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>{{ 'Edit Reservation' if reservation else 'Reserve a Table' }}</h1>
+        <p class="subtitle">The system automatically prevents double bookings</p>
+    </div>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        <div class="form-group">
+            <label for="customer_name">Customer Name</label>
+                 <input type="text" id="customer_name" name="customer_name" placeholder="Full name"
+                     value="{{ reservation.customer_name if reservation else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+                 <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210"
+                     value="{{ reservation.phone if reservation else '' }}" required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="date">Date</label>
+                  <input type="date" id="date" name="date"
+                      value="{{ reservation.date if reservation else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="time">Time</label>
+                  <input type="time" id="time" name="time"
+                      value="{{ reservation.time if reservation else '' }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="guests">Number of Guests</label>
+                  <input type="number" min="1" id="guests" name="guests" placeholder="e.g. 2"
+                      value="{{ reservation.guests if reservation else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="table_id">Table</label>
+                <select id="table_id" name="table_id" required>
+                    <option value="" disabled {{ 'selected' if not reservation }}>Select a table</option>
+                    {% for table in tables %}
+                        <option value="{{ table.id }}" {{ 'selected' if reservation and table.id == reservation.table_id }}>
+                            Table #{{ table.table_number }} (seats {{ table.capacity }}) — {{ table.status }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">{{ 'Save Changes' if reservation else 'Confirm Reservation' }}</button>
+        <a href="{{ url_for('reservations') }}" class="btn btn-secondary btn-block" style="margin-top: 10px;">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}

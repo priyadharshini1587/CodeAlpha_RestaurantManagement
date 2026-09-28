@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Order' if order else 'New Order' }} | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>{{ 'Edit Order #' ~ order.id if order else 'Place a New Order' }}</h1>
+        <p class="subtitle">Select items and quantities — total updates live</p>
+    </div>
+</div>
+
+{% if menu_items %}
+<form method="POST" id="orderForm" class="form-card" style="max-width: 760px;">
+    {% for item in menu_items %}
+    {% set ordered_quantity = order_quantities.get(item.id, 0) %}
+    {% set available_quantity = item.quantity + ordered_quantity %}
+    <div class="order-item-row" data-price="{{ item.price }}">
+        <div>
+            <div class="oi-name">{{ item.name }}</div>
+            <div class="oi-price">₹{{ "%.2f"|format(item.price) }} &middot;
+                {% if available_quantity > 0 %} {{ available_quantity }} available
+                {% else %} <span class="out-of-stock">out of stock</span>
+                {% endif %}
+            </div>
+        </div>
+         <input type="checkbox" name="menu_item_id" value="{{ item.id }}"
+             {{ 'disabled' if available_quantity <= 0 }} {{ 'checked' if ordered_quantity > 0 }}>
+         <input type="number" name="quantity" min="1" max="{{ available_quantity }}"
+             value="{{ ordered_quantity if ordered_quantity else 1 }}" disabled>
+        <span class="menu-category">{{ item.category }}</span>
+    </div>
+    {% endfor %}
+
+    <div class="order-total-bar">
+        <span>Order Total</span>
+        <span class="value" id="orderTotalValue">₹0.00</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 20px;">{{ 'Save Changes' if order else 'Place Order' }}</button>
+</form>
+{% else %}
+<div class="empty-state">
+    <span class="empty-icon">🍽️</span>
+    <p>No menu items available. Add some from Menu Management first.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Inventory | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Inventory Management</h1>
+        <p class="subtitle">{{ inventory|length }} ingredient(s) tracked</p>
+    </div>
+    <a href="{{ url_for('add_inventory') }}" class="btn btn-primary">+ Add Ingredient</a>
+</div>
+
+{% if inventory %}
+<div class="table-wrapper">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Ingredient</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Update Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ing in inventory %}
+            <tr>
+                <td>{{ ing.ingredient_name }}</td>
+                <td>{{ ing.quantity }} {{ ing.unit }}</td>
+                <td>
+                    {% if ing.quantity <= ing.low_stock_threshold %}
+                        <span class="badge badge-occupied">Low Stock</span>
+                    {% else %}
+                        <span class="badge badge-available">In Stock</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form class="status-form" style="justify-content:flex-start;" method="POST"
+                          action="{{ url_for('update_inventory', id=ing.id) }}">
+                        <input type="number" step="0.1" min="0" name="quantity" value="{{ ing.quantity }}"
+                               style="width:90px; padding:6px 8px; border-radius:7px; border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+                        <button type="submit" class="btn btn-secondary btn-small">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_inventory', id=ing.id) }}"
+                          onsubmit="return confirm('Delete this ingredient?');">
+                        <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <span class="empty-icon">📦</span>
+    <p>No ingredients tracked yet.</p>
+</div>
+{% endif %}
+
+{% endblock %}

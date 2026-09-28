@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Order History | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Order History</h1>
+        <p class="subtitle">{{ orders|length }} order(s) placed</p>
+    </div>
+    <a href="{{ url_for('order_create') }}" class="btn btn-primary">+ New Order</a>
+</div>
+
+{% if orders %}
+<div class="grid grid-2">
+    {% for order in orders %}
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+            <h3 style="font-family: var(--font-heading);">Order #{{ order.id }}</h3>
+            <span class="badge badge-available">{{ order.status }}</span>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <a href="{{ url_for('edit_order', id=order.id) }}" class="btn btn-secondary btn-small">Edit</a>
+            <form method="POST" action="{{ url_for('delete_order', id=order.id) }}"
+                  onsubmit="return confirm('Delete this order and restore its stock?');">
+                <button type="submit" class="btn btn-danger btn-small">Delete</button>
+            </form>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 14px;">
+            {{ order.order_date.strftime("%d %b %Y, %H:%M") }}
+        </p>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-bottom: 16px;">
+            {% for oi in order.items %}
+            <div style="display:flex; justify-content:space-between; font-size:0.88rem;">
+                <span>{{ oi.quantity }} &times; {{ oi.menu_item.name if oi.menu_item else 'Deleted item' }}</span>
+                <span>₹{{ "%.2f"|format(oi.subtotal) }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border-color); padding-top:12px; font-weight:700;">
+            <span>Total</span>
+            <span style="color: var(--accent-gold-light);">₹{{ "%.2f"|format(order.total_amount) }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <span class="empty-icon">🧾</span>
+    <p>No orders placed yet.</p>
+</div>
+{% endif %}
+
+{% endblock %}

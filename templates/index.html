@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Home | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<section class="hero">
+    <h1>Welcome to <span>Willow &amp; Thyme</span></h1>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+</section>
+
+<div class="grid grid-3">
+    <a href="{{ url_for('menu') }}" class="card feature-link-card">
+        <span class="icon">🍕</span>
+        <h3>Menu Management</h3>
+        <p>Add, edit and remove dishes with pricing and stock.</p>
+    </a>
+    <a href="{{ url_for('tables') }}" class="card feature-link-card">
+        <span class="icon">🪑</span>
+        <h3>Table Management</h3>
+        <p>Track table capacity and live availability status.</p>
+    </a>
+    <a href="{{ url_for('reservations') }}" class="card feature-link-card">
+        <span class="icon">📅</span>
+        <h3>Reservations</h3>
+        <p>Book tables for customers with double-booking protection.</p>
+    </a>
+    <a href="{{ url_for('order_create') }}" class="card feature-link-card">
+        <span class="icon">🧾</span>
+        <h3>Order Management</h3>
+        <p>Place customer orders and auto-calculate totals.</p>
+    </a>
+    <a href="{{ url_for('inventory') }}" class="card feature-link-card">
+        <span class="icon">📦</span>
+        <h3>Inventory</h3>
+        <p>Monitor ingredient stock with automatic low-stock alerts.</p>
+    </a>
+    <a href="{{ url_for('dashboard') }}" class="card feature-link-card">
+        <span class="icon">📊</span>
+        <h3>Admin Dashboard</h3>
+        <p>See revenue, orders and reservations at a glance.</p>
+    </a>
+</div>
+
+{% endblock %}

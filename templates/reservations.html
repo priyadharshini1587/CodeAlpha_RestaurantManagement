@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Reservations | Willow &amp; Thyme{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Reservations</h1>
+        <p class="subtitle">{{ reservations|length }} reservation(s) on record</p>
+    </div>
+    <a href="{{ url_for('reserve') }}" class="btn btn-primary">+ Reserve a Table</a>
+</div>
+
+{% if reservations %}
+<div class="table-wrapper">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Guests</th>
+                <th>Table</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reservations %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.customer_name }}</td>
+                <td>{{ r.phone }}</td>
+                <td>{{ r.date }}</td>
+                <td>{{ r.time }}</td>
+                <td>{{ r.guests }}</td>
+                <td>#{{ r.table.table_number if r.table else '—' }}</td>
+                <td>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <a href="{{ url_for('edit_reservation', id=r.id) }}" class="btn btn-secondary btn-small">Edit</a>
+                        <form method="POST" action="{{ url_for('delete_reservation', id=r.id) }}"
+                              onsubmit="return confirm('Delete this reservation?');">
+                            <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <span class="empty-icon">📅</span>
+    <p>No reservations yet.</p>
+</div>
+{% endif %}
+
+{% endblock %}
